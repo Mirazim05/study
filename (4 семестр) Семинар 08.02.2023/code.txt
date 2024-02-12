@@ -1,0 +1,95 @@
+#include <iostream>
+
+using namespace std;
+
+// Класс для кассового аппарата
+class CashRegister {
+private:
+    int cashOnHand; // количество денег в кассе
+
+public:
+    CashRegister() : cashOnHand(500) {} // конструктор по умолчанию
+    CashRegister(int cash) : cashOnHand(cash) {} // конструктор с параметром
+
+    int getCurrentBalance() { return cashOnHand; } // возвращает текущий баланс
+    void acceptAmount(int amount) { cashOnHand += amount; } // принимает деньги от покупателя
+};
+
+// Класс для типа диспенсера
+class DispenserType {
+private:
+    int numberOfItems; // количество товаров в диспенсере
+    int typeCost; // стоимость товара
+
+public:
+    DispenserType() : numberOfItems(50), typeCost(50) {} // конструктор по умолчанию
+    DispenserType(int items, int cost) : numberOfItems(items), typeCost(cost) {} // конструктор с параметром
+
+    int getNoOfItems() { return numberOfItems; } // возвращает количество товаров
+    int getCost() { return typeCost; } // возвращает стоимость товара
+    void makeSale() { numberOfItems--; } // уменьшает количество товаров на 1
+};
+
+// Функция для показа выбора продуктов
+void showSelection() {
+    cout << "Выберите продукт:\n";
+    cout << "1. Конфеты\n";
+    cout << "2. Чипсы\n";
+    cout << "3. Жвачка\n";
+    cout << "4. Печенье\n";
+}
+
+// Функция для продажи продукта
+void sellProduct(DispenserType& dispenser, CashRegister& cashRegister) {
+    int choice;
+    cout << "Введите номер продукта: ";
+    cin >> choice;
+
+    switch (choice) {
+    case 1:
+        cout << "Выбраны конфеты. Стоимость: " << dispenser.getCost() << " рублей\n";
+        break;
+    case 2:
+        cout << "Выбраны чипсы. Стоимость: " << dispenser.getCost() << " рублей\n";
+        break;
+    case 3:
+        cout << "Выбрана жвачка. Стоимость: " << dispenser.getCost() << " рублей\n";
+        break;
+    case 4:
+        cout << "Выбрано печенье. Стоимость: " << dispenser.getCost() << " рублей\n";
+        break;
+    default:
+        cout << "Некорректный выбор\n";
+        return;
+    }
+
+    if (dispenser.getNoOfItems() > 0) {
+        int amount;
+        cout << "Введите сумму: ";
+        cin >> amount;
+
+        if (amount >= dispenser.getCost()) {
+            cashRegister.acceptAmount(dispenser.getCost());
+            dispenser.makeSale();
+            cout << "Спасибо за покупку! Возьмите ваш товар.\n";
+        }
+        else {
+            cout << "Недостаточно денег для покупки товара.\n";
+        }
+    }
+    else {
+        cout << "Извините, товар закончился.\n";
+    }
+}
+
+int main() {
+    setlocale(LC_ALL, "rus");
+
+    CashRegister cashRegister;
+    DispenserType dispenser;
+
+    showSelection();
+    sellProduct(dispenser, cashRegister);
+
+    return 0;
+}
