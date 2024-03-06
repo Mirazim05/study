@@ -1,0 +1,8 @@
+﻿  Main.cpp
+C:\Users\Mykyta Smolenskyi\Desktop\ConsoleApplication1\ConsoleApplication1\Circle.h(31,48): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+  (компиляция исходного файла "Main.cpp")
+  
+C:\Users\Mykyta Smolenskyi\Desktop\ConsoleApplication1\ConsoleApplication1\Sphere.h(33,57): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+  (компиляция исходного файла "Main.cpp")
+  
+  ConsoleApplication1.vcxproj -> C:\Users\Mykyta Smolenskyi\Desktop\ConsoleApplication1\x64\Debug\ConsoleApplication1.exe
