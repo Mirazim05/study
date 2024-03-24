@@ -1,0 +1,165 @@
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <sstream>
+#include <iomanip>
+
+using namespace std;
+
+struct Book {
+    string id;
+    string author;
+    string title;
+    int pages;
+};
+
+// Функция для добавления новой записи
+void addRecord(const string& filename) {
+    ofstream file(filename, ios::app);
+    Book newBook;
+
+    cout << "Введите ID, Автора, Название, Количество страниц (разделите пробелами): ";
+    cin >> newBook.id >> newBook.author >> newBook.title >> newBook.pages;
+
+    file << newBook.id << " " << newBook.author << " " << newBook.title << " " << newBook.pages << endl;
+    file.close();
+}
+
+// Функция для просмотра всех записей
+void viewRecords(const string& filename) {
+    ifstream file(filename);
+    if (file.is_open()) {
+        string line;
+        cout << "ID\tАвтор\tНазвание\tСтраницы" << endl;
+        while (getline(file, line)) {
+            cout << line << endl;
+        }
+        file.close();
+    } else {
+        cout << "Ошибка открытия файла." << endl;
+    }
+}
+
+// Функция для удаления записи
+void deleteRecord(const string& filename) {
+    string idToDelete;
+    cout << "Введите ID записи для удаления: ";
+    cin >> idToDelete;
+
+    ifstream inFile(filename);
+    ofstream outFile("temp.txt");
+
+    string line;
+    while (getline(inFile, line)) {
+        istringstream iss(line);
+        string id;
+        iss >> id;
+        if (id != idToDelete) {
+            outFile << line << endl;
+        }
+    }
+
+    inFile.close();
+    outFile.close();
+
+    remove(filename.c_str());
+    rename("temp.txt", filename.c_str());
+}
+
+// Функция для поиска записи
+void searchRecord(const string& filename) {
+    string searchID;
+    cout << "Введите ID для поиска: ";
+    cin >> searchID;
+
+    ifstream file(filename);
+    if (file.is_open()) {
+        string line;
+        while (getline(file, line)) {
+            istringstream iss(line);
+            string id;
+            iss >> id;
+            if (id == searchID) {
+                cout << line << endl;
+                return;
+            }
+        }
+        cout << "Запись не найдена." << endl;
+        file.close();
+    } else {
+        cout << "Ошибка открытия файла." << endl;
+    }
+}
+
+// Функция для редактирования записи
+void editRecord(const string& filename) {
+    string idToEdit;
+    cout << "Введите ID записи для редактирования: ";
+    cin >> idToEdit;
+
+    ifstream inFile(filename);
+    ofstream outFile("temp.txt");
+
+    string line;
+    while (getline(inFile, line)) {
+        istringstream iss(line);
+        string id;
+        iss >> id;
+        if (id == idToEdit) {
+            Book editedBook;
+            cout << "Введите новый ID, Автора, Название, Количество страниц (разделите пробелами): ";
+            cin >> editedBook.id >> editedBook.author >> editedBook.title >> editedBook.pages;
+            outFile << editedBook.id << " " << editedBook.author << " " << editedBook.title << " " << editedBook.pages << endl;
+        } else {
+            outFile << line << endl;
+        }
+    }
+
+    inFile.close();
+    outFile.close();
+
+    remove(filename.c_str());
+    rename("temp.txt", filename.c_str());
+}
+
+int main() {
+    const string filename = "books.txt";
+    int choice;
+
+    do {
+        cout << "Меню:" << endl;
+        cout << "1. Добавить запись" << endl;
+        cout << "2. Просмотр записей" << endl;
+        cout << "3. Удалить запись" << endl;
+        cout << "4. Поиск записи" << endl;
+        cout << "5. Редактировать запись" << endl;
+        cout << "6. Выход" << endl;
+        cout << "Введите ваш выбор: ";
+        cin >> choice;
+
+        switch(choice) {
+            case 1:
+                addRecord(filename);
+                break;
+            case 2:
+                viewRecords(filename);
+                break;
+            case 3:
+                deleteRecord(filename);
+                break;
+            case 4:
+                searchRecord(filename);
+                break;
+            case 5:
+                editRecord(filename);
+                break;
+            case 6:
+                cout << "Завершение программы." << endl;
+                break;
+            default:
+                cout << "Неверный выбор. Пожалуйста, введите число от 1 до 6." << endl;
+        }
+    } while(choice != 6);
+
+    return 0;
+}

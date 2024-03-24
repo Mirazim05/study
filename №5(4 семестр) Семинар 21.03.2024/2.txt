@@ -1,0 +1,161 @@
+#include <iostream>
+#include <fstream>
+#include <vector>
+
+using namespace std;
+
+// Пример класса Matrix
+class Matrix {
+private:
+    int rows;
+    int cols;
+    vector<vector<int>> data;
+
+public:
+    Matrix(int rows, int cols) : rows(rows), cols(cols), data(rows, vector<int>(cols)) {}
+
+    void setElement(int row, int col, int value) {
+        if (row >= 0 && row < rows && col >= 0 && col < cols) {
+            data[row][col] = value;
+        } else {
+            cout << "Неверный индекс строки или столбца." << endl;
+        }
+    }
+
+    int getElement(int row, int col) const {
+        if (row >= 0 && row < rows && col >= 0 && col < cols) {
+            return data[row][col];
+        } else {
+            cout << "Неверный индекс строки или столбца." << endl;
+            return -1;
+        }
+    }
+
+    void print() const {
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < cols; ++j) {
+                cout << data[i][j] << " ";
+            }
+            cout << endl;
+        }
+    }
+
+    // Запись матрицы в файл (текстовый)
+    void writeToTextFile(const string& filename) {
+        ofstream outFile(filename);
+        if (!outFile.is_open()) {
+            cout << "Ошибка открытия файла." << endl;
+            return;
+        }
+
+        outFile << rows << " " << cols << endl;
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < cols; ++j) {
+                outFile << data[i][j] << " ";
+            }
+            outFile << endl;
+        }
+
+        outFile.close();
+    }
+
+    // Чтение матрицы из файла (текстового)
+    void readFromTextFile(const string& filename) {
+        ifstream inFile(filename);
+        if (!inFile.is_open()) {
+            cout << "Ошибка открытия файла." << endl;
+            return;
+        }
+
+        inFile >> rows >> cols;
+        data.resize(rows, vector<int>(cols));
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < cols; ++j) {
+                inFile >> data[i][j];
+            }
+        }
+
+        inFile.close();
+    }
+
+    // Запись матрицы в файл (бинарный)
+    void writeToBinaryFile(const string& filename) {
+        ofstream outFile(filename, ios::binary);
+        if (!outFile.is_open()) {
+            cout << "Ошибка открытия файла." << endl;
+            return;
+        }
+
+        outFile.write(reinterpret_cast<const char*>(&rows), sizeof(int));
+        outFile.write(reinterpret_cast<const char*>(&cols), sizeof(int));
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < cols; ++j) {
+                outFile.write(reinterpret_cast<const char*>(&data[i][j]), sizeof(int));
+            }
+        }
+
+        outFile.close();
+    }
+
+    // Чтение матрицы из файла (бинарного)
+    void readFromBinaryFile(const string& filename) {
+        ifstream inFile(filename, ios::binary);
+        if (!inFile.is_open()) {
+            cout << "Ошибка открытия файла." << endl;
+            return;
+        }
+
+        inFile.read(reinterpret_cast<char*>(&rows), sizeof(int));
+        inFile.read(reinterpret_cast<char*>(&cols), sizeof(int));
+        data.resize(rows, vector<int>(cols));
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < cols; ++j) {
+                inFile.read(reinterpret_cast<char*>(&data[i][j]), sizeof(int));
+            }
+        }
+
+        inFile.close();
+    }
+};
+
+int main() {
+    // Создаем несколько объектов Matrix
+    Matrix matrix1(2, 2);
+    matrix1.setElement(0, 0, 1);
+    matrix1.setElement(0, 1, 2);
+    matrix1.setElement(1, 0, 3);
+    matrix1.setElement(1, 1, 4);
+
+    Matrix matrix2(3, 3);
+    matrix2.setElement(0, 0, 5);
+    matrix2.setElement(0, 1, 6);
+    matrix2.setElement(0, 2, 7);
+    matrix2.setElement(1, 0, 8);
+    matrix2.setElement(1, 1, 9);
+    matrix2.setElement(1, 2, 10);
+    matrix2.setElement(2, 0, 11);
+    matrix2.setElement(2, 1, 12);
+    matrix2.setElement(2, 2, 13);
+
+    // Записываем матрицы в текстовый файл
+    matrix1.writeToTextFile("matrix_text.txt");
+    matrix2.writeToTextFile("matrix_text.txt");
+
+    // Считываем матрицы из текстового файла
+    Matrix matrix3(0, 0);
+    matrix3.readFromTextFile("matrix_text.txt");
+    cout << "Матрица из текстового файла:" << endl;
+    matrix3.print();
+
+    // Записываем матрицы в бинарный файл
+    matrix1.writeToBinaryFile("matrix_binary.bin");
+    matrix2.writeToBinaryFile("matrix_binary.bin");
+
+    // Считываем матрицы из бинарного файла
+    Matrix matrix4(0, 0);
+    matrix4.readFromBinaryFile("matrix_binary.bin");
+    cout << "Матрица из бинарного файла:" << endl;
+    matrix4.print();
+
+    return 0;
+}
