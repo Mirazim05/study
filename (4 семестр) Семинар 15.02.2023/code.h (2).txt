@@ -48,7 +48,7 @@ public:
         }
     }
 
-    Matrix& operator+=(const Matrix& other) { //???конструктор копирования присваиваниемм
+    Matrix& operator+=(const Matrix& other) { // конструктор копирования присваиваниемм
         for (unsigned int i = 0; i < m; ++i) {
             for (unsigned int j = 0; j < n; ++j) {
                 data[i][j] += other.data[i][j];
