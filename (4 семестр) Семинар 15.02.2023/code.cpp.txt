@@ -34,7 +34,7 @@ int main()
 	std::cout << "8) In-place subtraction: " << "\n" << matrix3 << std::endl;
 	std::cout << "9) Multiplication: " << matrix1 * matrix2 << std::endl;
 
-	matrix1.fillZeros(); //=?
+	matrix1.fillZeros();
 	matrix2.fillZeros();
 
 	bool is_equal = matrix1 == matrix2;
