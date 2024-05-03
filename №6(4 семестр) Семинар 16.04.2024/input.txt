@@ -1,0 +1,51 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+int main() {
+    // 1. Организуйте чтение из файла целочисленного одномерного вектора
+    std::vector<int> vec;
+    std::ifstream infile("input.txt");
+    int value;
+    while (infile >> value) {
+        vec.push_back(value);
+    }
+    infile.close();
+
+    // 2. Реверсируйте последовательность элементов вектора
+    std::reverse(vec.begin(), vec.end());
+
+    // 3. Найдите минимальный элемент
+    int min_element = *std::min_element(vec.begin(), vec.end());
+
+    // 4. Удалите из вектора все четные элементы
+    vec.erase(std::remove_if(vec.begin(), vec.end(), [](int x){ return x % 2 == 0; }), vec.end());
+
+    // 5. Отсортируйте вектор в убывающей или возрастающей последовательности
+    std::sort(vec.begin(), vec.end(), std::greater<int>());
+
+    // 6. Вставьте в вектор произвольный элемент, не нарушая сортировку
+    int arbitrary_element = 7;
+    vec.insert(std::lower_bound(vec.begin(), vec.end(), arbitrary_element, std::greater<int>()), arbitrary_element);
+
+    // 7. Определите индекс заданного элемента
+    int target_element = 5;
+    auto index = std::find(vec.begin(), vec.end(), target_element);
+    if (index != vec.end()) {
+        std::cout << "Индекс элемента " << target_element << ": " << std::distance(vec.begin(), index) << std::endl;
+    } else {
+        std::cout << "Элемент не найден" << std::endl;
+    }
+
+    // 8. Удалите из вектора дублированные элементы
+    vec.erase(std::unique(vec.begin(), vec.end()), vec.end());
+
+    // Выводим результаты
+    std::cout << "Вектор после всех операций:";
+    for (int elem : vec) {
+        std::cout << " " << elem;
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
